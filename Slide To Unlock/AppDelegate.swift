@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))
+        
         return true
     }
 
@@ -87,6 +90,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+    
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+        NSLog("Received notification")
+    }
+    
+    var localNotification = UILocalNotification()
+    func application(_ application: UIApplication,
+                     handleActionWithIdentifier identifier: String?,
+                     for notification: UILocalNotification,
+                     completionHandler: @escaping () -> Void) {
+        localNotification.alertAction = "unlock"
+        localNotification.alertBody = "Slide to Unlock"
+        localNotification.timeZone = NSTimeZone.local
+        localNotification.fireDate = NSDate(timeIntervalSinceNow: 1) as Date
+        UIApplication.shared.scheduleLocalNotification(localNotification)
+        UIControl().sendAction(#selector(URLSessionTask.suspend), to: UIApplication.shared, for: nil)
+        sleep(2);
+        exit(0);
     }
 
 }
